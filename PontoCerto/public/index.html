@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/PontoCerto/public/assets/css/style.css">
+    <title>Sistema de Gerenciamento de Linhas de Ônibus</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="tabs">
+            <button onclick="showTab('linhas')">Cadastro de Linhas</button>
+            <button onclick="showTab('pontos')">Cadastro de Pontos</button>
+            <button onclick="showTab('visualizacao')">Visualização</button>
+        </div>
+
+        <div id="linhas" class="tab-content active">
+            <h2>Cadastro de Linhas de Ônibus</h2>
+            <form id="linha-form" class="form-group">
+                <div class="form-field">
+                    <label for="numero">Número da Linha:</label>
+                    <input type="text" id="numero" required>
+                </div>
+                <div class="form-field">
+                    <label for="tipo">Tipo de Ônibus:</label>
+                    <select id="tipo" required>
+                        <option value="Comum">Comum</option>
+                        <option value="Executivo">Executivo</option>
+                        <option value="Articulado">Articulado</option>
+                    </select>
+
+                </div>
+                <button type="submit">Cadastrar Linha</button>
+            </form>
+        </div>
+
+    <div id="pontos" class="tab-content">
+        <div class="compact-form">
+            <div class="form-header">
+                <select id="linha-select">
+                    <option value="">Selecione a linha</option>
+                </select>
+                <div class="coordinate-inputs">
+                    <input type="number" id="latitude" placeholder="Latitude" step="any">
+                    <input type="number" id="longitude" placeholder="Longitude" step="any">
+                    <button onclick="salvarPonto(event)">+</button>
+                </div>
+            </div>
+            <button onclick="confirmarPontos()">Confirmar Todos</button>
+        </div>
+        <div id="temp-points-list" class="compact-list"></div>
+    </div>
+
+    <div id="visualizacao" class="tab-content">
+        <h2>Linhas e Pontos Cadastrados</h2>
+        <div class="table-container"></div>
+        <div id="points-list" class="points-list"></div>
+    </div>
+</div>
+
+    <script src="/PontoCerto/public/assets/script/script.js"></script>
+</body>
+
+</html>

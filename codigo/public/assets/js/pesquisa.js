@@ -1,4 +1,5 @@
 // Função para carregar e exibir os resultados da pesquisa
+// Função para carregar e exibir os resultados da pesquisa
 function setupSearch() {
     const searchContainer = document.querySelector('.search-container');
     
@@ -34,7 +35,7 @@ function setupSearch() {
                 if (lines.length > 0) {
                     const resultsHTML = lines.map(linha => `
                         <div class="p-4 hover:bg-gray-100 cursor-pointer border-b" 
-                             onclick="loadBusLine('${linha.numero}')">
+                             onclick="handleLineSelection('${linha.numero}')">
                             <div class="font-semibold">Linha ${linha.numero}</div>
                             <div class="text-sm text-gray-600">${linha.tipo}</div>
                         </div>
@@ -87,6 +88,51 @@ function setupSearch() {
         }
     });
 }
+
+// Função para lidar com a seleção de linha
+function handleLineSelection(lineNumber) {
+    // Inicializa o mapa se necessário
+    if (!window.map) {
+        window.initMap();
+    }
+
+     // Carrega e exibe os pontos da linha
+     fetch('/codigo/db/db.json')
+     .then(response => response.json())
+     .then(data => {
+         const points = data.pontos.filter(point => point.linha === lineNumber);
+         
+         if (points.length > 0) {
+             // Desenha a rota no mapa
+             window.drawBusRoute(points);
+             
+             // Busca informações adicionais da linha
+             const linha = data.linhas.find(l => l.numero === lineNumber);
+             if (linha) {
+                 let infoDiv = document.querySelector('.line-info');
+                 if (!infoDiv) {
+                     infoDiv = document.createElement('div');
+                     infoDiv.className = 'line-info p-4 bg-white rounded-xl shadow-md mt-4';
+                     document.querySelector('.map-placeholder').insertAdjacentElement('afterend', infoDiv);
+                 }
+                 infoDiv.innerHTML = `
+                     <h3 class="text-lg font-bold mb-2">Linha ${linha.numero}</h3>
+                     <p class="text-gray-600">Tipo: ${linha.tipo}</p>
+                     <p class="text-gray-600">Total de pontos: ${points.length}</p>
+                     <p class="text-gray-600">Primeiro ponto: ${points[0].latitude}, ${points[0].longitude}</p>
+                     <p class="text-gray-600">Último ponto: ${points[points.length-1].latitude}, ${points[points.length-1].longitude}</p>
+                 `;
+             }
+             
+             // Esconde os resultados da pesquisa
+             document.getElementById('searchResults').classList.add('hidden');
+         } else {
+             console.error(`Nenhum ponto encontrado para a linha ${lineNumber}`);
+         }
+     })
+     .catch(error => console.error('Erro ao carregar dados da linha:', error));
+}
+
 
 // Função para carregar linha selecionada
 function loadBusLine(lineNumber) {

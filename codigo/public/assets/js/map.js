@@ -31,14 +31,21 @@ function initMap() {
 function createBusStopIcon(pointInfo) {
     return L.marker([pointInfo.latitude, pointInfo.longitude], {
         icon: L.divIcon({
-            html: `<div class="bus-stop-marker"></div>`,
+            html: `<div class="bus-stop-marker" style="
+                width: 12px;
+                height: 12px;
+                background-color: #4285F4;
+                border: 2px solid white;
+                border-radius: 50%;
+                box-shadow: 0 0 4px rgba(0,0,0,0.3);
+            "></div>`,
             className: 'custom-div-icon',
-            iconSize: [24, 24],
-            iconAnchor: [12, 12]
+            iconSize: [12, 12],
+            iconAnchor: [6, 6]
         })
     }).bindPopup(`
         <div class="popup-content">
-            <h3>Ponto de Ônibus</h3>
+            <h3 class="font-bold mb-2">Ponto de Ônibus</h3>
             <p><strong>Linha:</strong> ${pointInfo.linha}</p>
             <p><strong>Sequência:</strong> ${pointInfo.sequencia || 'N/A'}</p>
             <p><strong>Coordenadas:</strong> ${pointInfo.latitude}, ${pointInfo.longitude}</p>
@@ -48,7 +55,9 @@ function createBusStopIcon(pointInfo) {
     });
 }
 
+// Função para desenhar a rota do ônibus
 function drawBusRoute(points) {
+    // Limpar o mapa antes de desenhar nova rota
     clearMap();
     
     const coordinates = points.map(point => [
@@ -70,42 +79,127 @@ function drawBusRoute(points) {
     currentPath = L.polyline(coordinates, {
         color: '#4285F4',
         weight: 3,
-        opacity: 1,
+        opacity: 0.8,
         lineCap: 'round',
         lineJoin: 'round',
-        dashArray: '1, 8' // Opcional: cria uma linha pontilhada
+        dashArray: '5, 10'
     }).addTo(map);
 
     // Ajustar o zoom para mostrar toda a rota
     map.fitBounds(currentPath.getBounds(), {
-        padding: [50, 50] // Adiciona um padding para melhor visualização
+        padding: [50, 50]
     });
 }
 
 // Função para limpar o mapa
 function clearMap() {
-    // Limpar markers
     markers.forEach(marker => map.removeLayer(marker));
     markers = [];
     
-    // Limpar polyline
     if (currentPath) {
         map.removeLayer(currentPath);
     }
 }
 
-// Função para carregar e exibir a rota de uma linha
-function loadBusLine(lineNumber) {
+// Função para configurar a pesquisa
+function setupSearch() {
+    const searchContainer = document.querySelector('.search-container');
+    
+    // Criar input de pesquisa se não existir
+    if (!searchContainer.querySelector('input')) {
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.placeholder = 'Buscar linha...';
+        searchInput.className = 'w-full pl-10 pr-4 py-2 rounded-xl border focus:outline-none focus:border-blue-500';
+        searchContainer.appendChild(searchInput);
+    }
+
+    const searchInput = searchContainer.querySelector('input');
+    const searchResults = document.getElementById('searchResults') || (() => {
+        const resultsDiv = document.createElement('div');
+        resultsDiv.id = 'searchResults';
+        resultsDiv.className = 'absolute w-full bg-white mt-2 rounded-xl shadow-lg hidden z-50';
+        searchContainer.appendChild(resultsDiv);
+        return resultsDiv;
+    })();
+
+    // Função para realizar a pesquisa
+    function performSearch(query) {
+        fetch('/codigo/db/db.json')
+            .then(response => response.json())
+            .then(data => {
+                const lines = data.linhas.filter(linha => 
+                    linha.numero.toLowerCase().includes(query.toLowerCase())
+                );
+
+                if (lines.length > 0) {
+                    const resultsHTML = lines.map(linha => `
+                        <div class="p-4 hover:bg-gray-100 cursor-pointer border-b" 
+                             onclick="handleLineSelection('${linha.numero}')">
+                            <div class="font-semibold">Linha ${linha.numero}</div>
+                            <div class="text-sm text-gray-600">${linha.tipo}</div>
+                        </div>
+                    `).join('');
+                    
+                    searchResults.innerHTML = resultsHTML;
+                    searchResults.classList.remove('hidden');
+                } else {
+                    searchResults.innerHTML = `
+                        <div class="p-4 text-gray-600">
+                            Nenhuma linha encontrada
+                        </div>
+                    `;
+                    searchResults.classList.remove('hidden');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao carregar dados:', error);
+                searchResults.innerHTML = `
+                    <div class="p-4 text-red-600">
+                        Erro ao buscar linhas
+                    </div>
+                `;
+                searchResults.classList.remove('hidden');
+            });
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.trim();
+        if (query.length > 0) {
+            performSearch(query);
+        } else {
+            searchResults.classList.add('hidden');
+        }
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!searchContainer.contains(e.target)) {
+            searchResults.classList.add('hidden');
+        }
+    });
+
+    searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            searchResults.classList.add('hidden');
+        }
+    });
+}
+
+// Função para lidar com a seleção de linha
+function handleLineSelection(lineNumber) {
+    if (!map) {
+        initMap();
+    }
+
     fetch('/codigo/db/db.json')
         .then(response => response.json())
         .then(data => {
             const points = data.pontos.filter(point => point.linha === lineNumber);
+            
             if (points.length > 0) {
-                if (!map) {
-                    initMap();
-                }
                 drawBusRoute(points);
-
+                
                 const linha = data.linhas.find(l => l.numero === lineNumber);
                 if (linha) {
                     let infoDiv = document.querySelector('.line-info');
@@ -122,6 +216,8 @@ function loadBusLine(lineNumber) {
                         <p class="text-gray-600">Último ponto: ${points[points.length-1].latitude}, ${points[points.length-1].longitude}</p>
                     `;
                 }
+                
+                document.getElementById('searchResults').classList.add('hidden');
             } else {
                 console.error(`Nenhum ponto encontrado para a linha ${lineNumber}`);
             }
@@ -129,8 +225,11 @@ function loadBusLine(lineNumber) {
         .catch(error => console.error('Erro ao carregar dados da linha:', error));
 }
 
-// Inicializar o mapa quando o documento estiver pronto
-document.addEventListener('DOMContentLoaded', initMap);
+// Inicializar quando o documento estiver pronto
+document.addEventListener('DOMContentLoaded', () => {
+    initMap();
+    setupSearch();
+});
 
 // Adicionar estilos necessários
 const style = document.createElement('style');
@@ -144,8 +243,11 @@ style.textContent = `
         background: transparent;
         border: none;
     }
+    .bus-stop-marker {
+        transition: transform 0.2s;
+    }
+    .bus-stop-marker:hover {
+        transform: scale(1.2);
+    }
 `;
-
-
 document.head.appendChild(style);
-

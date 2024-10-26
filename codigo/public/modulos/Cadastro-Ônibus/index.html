@@ -4,17 +4,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/PontoCerto/public/assets/css/style.css">
+    <link rel="stylesheet" href="/codigo/public/assets/css/cadastro.css">
     <title>Sistema de Gerenciamento de Linhas de Ônibus</title>
 </head>
 
 <body>
     <div class="container">
         <div class="tabs">
-            <button onclick="showTab('linhas')">Cadastro de Linhas</button>
+
+            <a href="../../index.html" class="inline-flex items-center px-3 py-1 mb-4 text-sm rounded-lg hover:bg-gray-100 transition-colors" style="color: var(--primary);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Voltar
+            </a>
+
+
+        </div>
+
+                    <button onclick="showTab('linhas')">Cadastro de Linhas</button>
             <button onclick="showTab('pontos')">Cadastro de Pontos</button>
             <button onclick="showTab('visualizacao')">Visualização</button>
-        </div>
+            
 
         <div id="linhas" class="tab-content active">
             <h2>Cadastro de Linhas de Ônibus</h2>
@@ -35,7 +46,7 @@
                 <button type="submit">Cadastrar Linha</button>
             </form>
         </div>
-
+</div>
     <div id="pontos" class="tab-content">
         <div class="compact-form">
             <div class="form-header">
@@ -60,7 +71,9 @@
     </div>
 </div>
 
-    <script src="/PontoCerto/public/assets/script/script.js"></script>
+
+
+    <script src="/codigo/public/assets/js/cadastro.js"></script>
 </body>
 
 </html>

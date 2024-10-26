@@ -28,42 +28,41 @@ function initMap() {
 }
 
 // Função para criar um ícone personalizado para os pontos de ônibus
-function createBusStopIcon() {
-    return L.divIcon({
-        className: 'custom-div-icon',
-        html: `<div style="
-            background-color: #4285F4;
-            border: 2px solid white;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            box-shadow: 0 0 4px rgba(0,0,0,0.3);">
-            </div>`,
-        iconSize: [12, 12],
-        iconAnchor: [6, 6]
+function createBusStopIcon(pointInfo) {
+    return L.marker([pointInfo.latitude, pointInfo.longitude], {
+        icon: L.divIcon({
+            html: `<div class="bus-stop-marker"></div>`,
+            className: 'custom-div-icon',
+            iconSize: [24, 24],
+            iconAnchor: [12, 12]
+        })
+    }).bindPopup(`
+        <div class="popup-content">
+            <h3>Ponto de Ônibus</h3>
+            <p><strong>Linha:</strong> ${pointInfo.linha}</p>
+            <p><strong>Sequência:</strong> ${pointInfo.sequencia || 'N/A'}</p>
+            <p><strong>Coordenadas:</strong> ${pointInfo.latitude}, ${pointInfo.longitude}</p>
+        </div>
+    `, {
+        maxWidth: 300
     });
 }
 
-// Função para desenhar a rota no mapa
 function drawBusRoute(points) {
-    // Limpar markers e path anteriores
     clearMap();
     
-    // Criar array de coordenadas para a polyline
     const coordinates = points.map(point => [
         parseFloat(point.latitude),
         parseFloat(point.longitude)
     ]);
 
     // Criar e adicionar markers para cada ponto
-    coordinates.forEach((coord, index) => {
-        const marker = L.marker(coord, {
-            icon: createBusStopIcon()
-        }).addTo(map);
-        
-        // Adicionar popup com informação do ponto
-        marker.bindPopup(`Ponto ${index + 1}`);
-        
+    points.forEach((point, index) => {
+        const marker = createBusStopIcon({
+            ...point,
+            sequencia: index + 1
+        });
+        marker.addTo(map);
         markers.push(marker);
     });
 
@@ -71,11 +70,16 @@ function drawBusRoute(points) {
     currentPath = L.polyline(coordinates, {
         color: '#4285F4',
         weight: 3,
-        opacity: 1
+        opacity: 1,
+        lineCap: 'round',
+        lineJoin: 'round',
+        dashArray: '1, 8' // Opcional: cria uma linha pontilhada
     }).addTo(map);
 
     // Ajustar o zoom para mostrar toda a rota
-    map.fitBounds(currentPath.getBounds());
+    map.fitBounds(currentPath.getBounds(), {
+        padding: [50, 50] // Adiciona um padding para melhor visualização
+    });
 }
 
 // Função para limpar o mapa
@@ -97,16 +101,13 @@ function loadBusLine(lineNumber) {
         .then(data => {
             const points = data.pontos.filter(point => point.linha === lineNumber);
             if (points.length > 0) {
-                // Inicializar o mapa se ainda não foi inicializado
                 if (!map) {
                     initMap();
                 }
                 drawBusRoute(points);
 
-                // Adicionar informações da linha
                 const linha = data.linhas.find(l => l.numero === lineNumber);
                 if (linha) {
-                    // Criar ou atualizar o elemento de informações
                     let infoDiv = document.querySelector('.line-info');
                     if (!infoDiv) {
                         infoDiv = document.createElement('div');
@@ -117,6 +118,8 @@ function loadBusLine(lineNumber) {
                         <h3 class="text-lg font-bold mb-2">Linha ${linha.numero}</h3>
                         <p class="text-gray-600">Tipo: ${linha.tipo}</p>
                         <p class="text-gray-600">Total de pontos: ${points.length}</p>
+                        <p class="text-gray-600">Primeiro ponto: ${points[0].latitude}, ${points[0].longitude}</p>
+                        <p class="text-gray-600">Último ponto: ${points[points.length-1].latitude}, ${points[points.length-1].longitude}</p>
                     `;
                 }
             } else {
@@ -142,4 +145,7 @@ style.textContent = `
         border: none;
     }
 `;
+
+
 document.head.appendChild(style);
+

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../../assets/css/cadastro.css">
+    <title>Sistema de Gerenciamento de Linhas de Ônibus</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Botão Voltar -->
+        <div style="margin-bottom: 1.5rem;">
+            <a href="../../index.html" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; color: var(--primary-color);">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor" style="width: 1rem; height: 1rem;">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Voltar
+            </a>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button onclick="showTab('linhas')" class="tab">Cadastro de Linhas</button>
+            <button onclick="showTab('pontos')" class="tab">Cadastro de Pontos</button>
+            <button onclick="showTab('visualizacao')" class="tab">Visualização</button>
+        </div>
+
+        <!-- Conteúdo das Tabs -->
+        <div id="linhas" class="tab-content active">
+            <h2>Cadastro de Linhas de Ônibus</h2>
+            
+            <form id="linha-form" class="form-group">
+                <div class="form-field">
+                    <label for="numero">Número da Linha:</label>
+                    <input type="text" id="numero" required>
+                </div>
+                <div class="form-field">
+                    <label for="tipo">Tipo de Ônibus:</label>
+                    <select id="tipo" required>
+                        <option value="Comum">Comum</option>
+                        <option value="Executivo">Executivo</option>
+                        <option value="Articulado">Articulado</option>
+                    </select>
+                </div>
+                <button type="submit">Cadastrar Linha</button>
+            </form>
+        </div>
+
+        <div id="pontos" class="tab-content">
+            <h2>Cadastro de Pontos</h2>
+            <div class="compact-form">
+                <div class="form-header">
+                    <select id="linha-select">
+                        <option value="">Selecione a linha</option>
+                    </select>
+                    <div class="coordinate-inputs">
+                        <input type="number" id="latitude" placeholder="Latitude" step="any">
+                        <input type="number" id="longitude" placeholder="Longitude" step="any">
+                        <button onclick="salvarPonto(event)">+</button>
+                    </div>
+                </div>
+                <button onclick="confirmarPontos()">Confirmar Todos</button>
+            </div>
+            <div id="temp-points-list" class="compact-list"></div>
+        </div>
+
+        <div id="visualizacao" class="tab-content">
+            <h2>Linhas e Pontos Cadastrados</h2>
+            <div class="table-container"></div>
+            <div id="points-list" class="points-list"></div>
+        </div>
+    </div>
+
+
+
+    <script src="../../assets/js/cadastro.js"></script>
+</body>
+</html>

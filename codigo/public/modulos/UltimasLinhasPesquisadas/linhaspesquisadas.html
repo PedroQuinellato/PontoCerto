@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link href="../../assets/css/style.css" rel="stylesheet">
+    <link rel="stylesheet" href="../../assets/css/pesquisa.css">
+    <link rel="stylesheet" href="../../assets/css/cadastro.css">
+    <link rel="stylesheet" href="../../assets/css/home.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <title>Ultimas linhas pesquisadas pelo usuário</title>
+</head>
+<body>
+</head>
+    <body class="bg-gray-50 min-h-screen" style="background-color: var(--background);">
+        <!-- Navbar -->
+        <nav class="bg-white shadow-md">
+            <div class="container mx-auto px-6">
+                <div class="flex justify-between items-center h-20">
+                    <div class="logo-container">
+                        <svg width="48" height="48" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <!-- Fundo circular -->
+                            <circle cx="20" cy="20" r="20" fill="var(--primary)" fill-opacity="0.1"/>
+                            
+                            <!-- Corpo do ônibus -->
+                            <rect x="8" y="14" width="24" height="12" rx="2" fill="var(--primary)"/>
+                            
+                            <!-- Janelas -->
+                            <rect x="10" y="16" width="4" height="4" rx="1" fill="var(--background)"/>
+                            <rect x="16" y="16" width="4" height="4" rx="1" fill="var(--background)"/>
+                            <rect x="22" y="16" width="4" height="4" rx="1" fill="var(--background)"/>
+                            
+                            <!-- Rodas -->
+                            <circle cx="12" cy="28" r="3" fill="var(--accent)"/>
+                            <circle cx="28" cy="28" r="3" fill="var(--accent)"/>
+                            
+                            <!-- Linha de movimento -->
+                            <path d="M5 32C8 28 32 28 35 32" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2"/>
+                        </svg>
+                        <a href="../../index.html"><span class="logo-text">PontoCerto</span></a>
+                    </div>
+                    <div class="flex items-center">
+                        <a href="../Cadastro-Ônibus/cadastro.html" class="px-6 py-3 rounded-xl hover:bg-blue-50 flex items-center transition-all duration-300" style="color: var(--primary);">
+                            <span class="font-semibold">Área Administrativa</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </body>
+    
+    <div class="card p-8 mb-10">
+    </div>
+    
+    <!-- Quick Access Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+
+        <!-- Card 2 -->
+        <div class="card p-6 quick-access-card">
+            <a href="../Horários/horarios.html" class="flex items-center">
+                <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="var(--accent)">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <div class="ml-4">
+                    <h3 class="font-bold text-lg" style="color: var(--primary);">Horários</h3>
+                    <p style="color: var(--text);">Consulte a programação</p>
+                </div>
+            </a>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card p-6 quick-access-card">
+            <div class="flex items-center">
+                <div class="icon-container">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="var(--accent)">
+                        <path d="M8 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM15 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z"/>
+                        <path d="M3 4a1 1 0 00-1 1v10a1 1 0 001 1h1.05a2.5 2.5 0 014.9 0H10a1 1 0 001-1V5a1 1 0 00-1-1H3zM14 7h-3v7h3V7z"/>
+                    </svg>
+                </div>
+                <a href="../UltimasLinhasPesquisadas/linhaspesquisadas.html">
+                    <div class="ml-4">
+                        <h3 class="font-bold text-lg" style="color: var(--primary);">Minhas Linhas</h3>
+                        <p style="color: var(--text);">Rotas recentes</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- main -->
+        <div class="container">
+            <div class="controls">
+                <button onclick="mostrarComoLista()">Mostrar histórico</button>
+            </div>
+            <div id="resultado"></div>
+        </div>
+    
+        <script>
+            let historico = JSON.parse(localStorage.getItem('historicoLinhas')) || [];
+    
+            // Função para mostrar dados como lista
+            function mostrarComoLista() {
+                const resultado = document.getElementById('resultado');
+                resultado.innerHTML = '';
+                
+                historico.forEach(historico => {
+                    const div = document.createElement('div');
+                    div.className = 'item';
+                    div.innerHTML = `Linha: ${historico.numero}`;
+                    resultado.appendChild(div);
+                });
+            }
+        </script>    
+
+
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-16" style="border-color: var(--secondary);">
+        <div class="container mx-auto px-8 py-8">
+            <p class="text-center text-sm" style="color: var(--text);">© 2024 PontoCerto - Sistema de Monitoramento de Ônibus</p>
+        </div>
+    </footer>
+    <script src="../../assets/js/ultimaslinhas.js"></script>
+</html>

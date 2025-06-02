@@ -1,0 +1,131 @@
+/* ==========================================================================
+   BusTrack Home Styles
+   ========================================================================== */
+
+/* Variables
+   ========================================================================== */
+   :root {
+    --primary: #1E40AF;       /* Rich blue */
+    --secondary: #60A5FA;     /* Light blue */
+    --accent: #F59E0B;        /* Warm amber */
+    --background: #F0F9FF;    /* Very light blue */
+    --text: #1F2937;          /* Dark gray */
+    --card-bg: #FFFFFF;       /* Pure white */
+}
+
+/* Base Layout
+   ========================================================================== */
+main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+}
+
+/* Logo Styles
+   ========================================================================== */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo-text {
+    font-weight: 800;
+    font-size: 1.75rem;
+    color: var(--primary);
+    letter-spacing: -0.5px;
+}
+
+/* Card Components
+   ========================================================================== */
+.card {
+    background: var(--card-bg);
+    border-radius: 1.25rem;
+    box-shadow: 0 4px 15px rgba(30, 64, 175, 0.08);
+    transition: all 0.3s ease;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.quick-access-card {
+    transition: all 0.3s ease;
+    border: 1px solid rgba(96, 165, 250, 0.2);
+}
+
+.quick-access-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(30, 64, 175, 0.12);
+    border-color: var(--secondary);
+}
+
+/* Search Components
+   ========================================================================== */
+.search-container {
+    position: relative;
+}
+
+.search-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary);
+}
+
+.search-input {
+    padding: 1rem 1rem 1rem 3.5rem !important;
+    background: var(--background);
+    border: 2px solid var(--secondary);
+    border-radius: 1rem;
+    font-size: 1.1rem;
+    
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+}
+
+/* Button Styles
+   ========================================================================== */
+.primary-button {
+    background-color: var(--primary);
+    transition: all 0.3s ease;
+    padding: 1rem 2rem;
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+.primary-button:hover {
+    background-color: #1E3A8A;
+    transform: translateY(-1px);
+}
+
+/* Map Components
+   ========================================================================== */
+.map-placeholder {
+    min-height: 400px;
+    background: var(--background);
+    border-radius: 0 0 1.25rem 1.25rem;
+}
+
+/* Icon Components
+   ========================================================================== */
+.icon-container {
+    background: var(--background);
+    padding: 1rem;
+    border-radius: 1rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Media Queries
+   ========================================================================== */
+@media (min-width: 768px) {
+    main {
+        padding: 3rem 2rem;
+    }
+}
+
